@@ -1,12 +1,76 @@
-<template>
-    <lightning-card title="searchBar">
-        <div class="slds-m-around_medium">
-        <lightning-input type ="text" name="cityInput" label = "Search cities">
-            </lightning-input>
-        </div>
+<template >
 
-    </lightning-card>
-    
+<lightning-card title="Search City">
+    <div class="slds-m-around_medium">
+    <lightning-input type ="search" name="cityInput" value={searchValue} onchange={searchQuery} label = "Search City">
+        </lightning-input>
+    </div>
 
+    <lightning-button style = "padding: 15px;" onclick={handleSearchQuery} variant="brand" label="Search" icon-name="utility:search"></lightning-button>
     
+</br>
+<lightning-layout>
+    <lightning-layout-item size="10" medium-device-size="5" padding="around-small">
+<div>
+    Search Results...<br>
+    <div if:false={isLoaded} class = "slds-is-relative">
+        <lightning-spinner alternative-text ="Loading..."></lightning-spinner>
+    </div>
+<template if:true={searchResultsFound} >
+    <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_col-bordered slds-table_striped " >
+    <thead>
+        <tr class="slds-text-title_caps">
+            
+            <th scope="col">
+                <div title="Value">City</div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <template for:each={citySearchList} for:item="mapKey">
+            <tr key={mapKey.key}>
+                <th scope="col">
+                    <div>{mapKey.value}</div>
+                </th>
+                <th scope="col">
+                        <lightning-button icon-name="utility:add" value={mapKey.key} class="slds-float_right" variant="brand" onclick={handleAddCity} label="Add" ></lightning-button>
+                    </th>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>
+<template if:false={searchResultsFound}>
+   <div>
+    No cities found!
+   </div> 
+</template>
+    </div>
+        
+</lightning-layout-item >
+<lightning-layout-item size="8" medium-device-size="6" padding="around-small" >
+Tracking... <br>
+<template if:true={foundSavedCities}>
+<lightning-datatable
+    key-field="id"
+    data={weatherData}
+    columns={columns}
+    hide-checkbox-column
+    onrowaction = {deleteCity}>
+
+</lightning-datatable>
+</template>
+
+<template if:false={foundSavedCities}>
+    <p class="slds-align_absolute center">Please search and add a city first!</p>
+</template>
+
+</lightning-layout-item>
+</lightning-layout>
+
+</lightning-card>
+
+
+
+
 </template>
